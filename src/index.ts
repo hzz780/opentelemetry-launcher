@@ -1,20 +1,17 @@
-import {Tracer} from '@opentelemetry/sdk-trace-base';
-const { SimpleSpanProcessor } = require( '@opentelemetry/sdk-trace-base');
-const { WebTracerProvider } = require( '@opentelemetry/sdk-trace-web');
-const { XMLHttpRequestInstrumentation } = require( '@opentelemetry/instrumentation-xml-http-request');
-const { ZoneContextManager } = require( '@opentelemetry/context-zone');
-const { OTLPTraceExporter } = require( '@opentelemetry/exporter-trace-otlp-http');
-import { W3CTraceContextPropagator } from '@opentelemetry/core';
-const { registerInstrumentations } = require( '@opentelemetry/instrumentation');
-const { Resource } = require('@opentelemetry/resources');
-const { SEMRESATTRS_SERVICE_NAME } = require('@opentelemetry/semantic-conventions');
+import { SimpleSpanProcessor, Tracer } from '@opentelemetry/sdk-trace-base';
+import { WebTracerProvider } from '@opentelemetry/sdk-trace-web';
+import { XMLHttpRequestInstrumentation } from '@opentelemetry/instrumentation-xml-http-request';
+import { ZoneContextManager } from '@opentelemetry/context-zone';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { W3CTraceContextPropagator } from'@opentelemetry/core';
+import { registerInstrumentations } from '@opentelemetry/instrumentation';
+import { Resource } from'@opentelemetry/resources';
+import { SEMRESATTRS_SERVICE_NAME } from'@opentelemetry/semantic-conventions';
 
-import {FetchInstrumentation} from '@opentelemetry/instrumentation-fetch';
-// import {DocumentLoadInstrumentation} from '@opentelemetry/instrumentation-document-load';
-// import {UserInteractionInstrumentation} from '@opentelemetry/instrumentation-user-interaction';
+import {FetchInstrumentation} from'@opentelemetry/instrumentation-fetch';
 
-let WEB_TRACER_WITH_ZONE: any;
-export function initWebTracerWithZone (openTelemetryConfig): Tracer {
+let WEB_TRACER_WITH_ZONE: Tracer;
+export function initWebTracerWithZone (openTelemetryConfig: { serviceName: any; collectorEndpoint: any; ignoreUrls: any; propagateTraceHeaderCorsUrls: any; tracerName: any; }): Tracer {
   console.log('init WebTracer With Zone', openTelemetryConfig);
   if (WEB_TRACER_WITH_ZONE) {
     return WEB_TRACER_WITH_ZONE;
@@ -41,8 +38,6 @@ export function initWebTracerWithZone (openTelemetryConfig): Tracer {
 
   registerInstrumentations({
     instrumentations: [
-      // new DocumentLoadInstrumentation(),
-      // new UserInteractionInstrumentation(),
       new XMLHttpRequestInstrumentation({
         ignoreUrls: openTelemetryConfig.ignoreUrls,
         propagateTraceHeaderCorsUrls: openTelemetryConfig.propagateTraceHeaderCorsUrls
